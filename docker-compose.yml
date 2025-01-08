@@ -1,0 +1,32 @@
+version: '3.8'
+
+x-environment: &default-environment
+  NODE_ENV: ${NODE_ENV:-local}
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_db_nest_${NODE_ENV:-local}
+    ports:
+      - "${DB_PORT}:5432"
+    environment:
+      <<: *default-environment
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+    name: postgres_data_${NODE_ENV:-local}
+
+networks:
+  app-network:
+    name: app-network_${NODE_ENV:-local}
+    driver: bridge 
+
+
+#docker compose --env-file  .env.local up -d
